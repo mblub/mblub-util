@@ -1,0 +1,37 @@
+package com.mblub.util.io.unchecked;
+
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.nio.file.Files;
+import java.nio.file.OpenOption;
+import java.nio.file.Path;
+
+/**
+ * Wrapper functions for java file utilities that catch IOException and rethrow
+ * as UncheckedIOException
+ * 
+ * @author mike
+ *
+ */
+public class UncheckedFiles {
+
+  public static FileReader newFileReader(File file) {
+    try {
+      return new FileReader(file);
+    } catch (FileNotFoundException fnfe) {
+      throw new UncheckedIOException(fnfe);
+    }
+  }
+
+  public static BufferedWriter newBufferedWriter(Path path, OpenOption... options) {
+    try {
+      return Files.newBufferedWriter(path, options);
+    } catch (IOException ioe) {
+      throw new UncheckedIOException(ioe);
+    }
+  }
+}
