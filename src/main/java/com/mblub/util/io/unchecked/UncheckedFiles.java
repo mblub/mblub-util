@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.UncheckedIOException;
+import java.nio.file.CopyOption;
 import java.nio.file.Files;
 import java.nio.file.OpenOption;
 import java.nio.file.Path;
@@ -30,6 +31,14 @@ public class UncheckedFiles {
   public static BufferedWriter newBufferedWriter(Path path, OpenOption... options) {
     try {
       return Files.newBufferedWriter(path, options);
+    } catch (IOException ioe) {
+      throw new UncheckedIOException(ioe);
+    }
+  }
+  
+  public static Path move(Path source, Path target, CopyOption...options) {
+    try {
+      return Files.move(source, target, options);
     } catch (IOException ioe) {
       throw new UncheckedIOException(ioe);
     }
