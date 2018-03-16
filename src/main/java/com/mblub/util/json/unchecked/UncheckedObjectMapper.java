@@ -25,6 +25,15 @@ public class UncheckedObjectMapper extends ObjectMapper {
   }
 
   @Override
+  public <T> T readValue(File src, Class<T> valueType) {
+    try {
+      return super.readValue(src, valueType);
+    } catch (IOException ioe) {
+      throw new UncheckedIOException(ioe);
+    }
+  }
+
+  @Override
   public void writeValue(File resultFile, Object value) {
     try {
       super.writeValue(resultFile, value);
