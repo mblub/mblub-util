@@ -95,5 +95,15 @@
       <artifactId>streamex</artifactId>
       <version>0.6.1</version>
     </dependency>
+    <dependency>
+      <groupId>org.mongodb</groupId>
+      <artifactId>mongodb-driver</artifactId>
+      <version>3.5.0</version>
+    </dependency>
+    <dependency>
+      <groupId>fr.javatic.mongo</groupId>
+      <artifactId>mongo-jackson-codec</artifactId>
+      <version>3.2.2__0.5</version>
+    </dependency>
   </dependencies>
 </project>
