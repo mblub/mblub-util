@@ -1,8 +1,6 @@
 package com.mblub.util.db;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.lang.ProcessBuilder.Redirect;
 import java.lang.reflect.Field;
 import java.nio.file.FileVisitResult;
@@ -11,7 +9,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class MongoTemporaryServer {
@@ -101,30 +98,19 @@ public class MongoTemporaryServer {
       } catch (Throwable e) {
       }
     }
-    new Thread(() -> new BufferedReader(new InputStreamReader(mongoProcess.getInputStream())).lines()
-            .forEach(this::handleProcessOutput)).start();
   }
 
   public void stopServer() throws IOException, InterruptedException {
     System.out.println("killing " + pid + "...");
     ProcessBuilder pb = new ProcessBuilder("kill", pid);
     Process killProcess = pb.start();
-    new BufferedReader(new InputStreamReader(killProcess.getInputStream())).lines().forEach(System.out::println);
+    pb.redirectOutput(Redirect.INHERIT);
     killProcess.waitFor();
     System.out.println("after kill");
     mongoProcess.waitFor();
     System.out.println("after mongoProcess waitFor");
     deleteDatabaseFiles();
     System.out.println("after deleting database files");
-  }
-
-  protected void handleProcessOutput(String line) {
-    System.out.println("in handleProcessOutput");
-    System.out.println(line);
-    if (pid == null) {
-      Matcher matcher = PID_LOG_PATTERN.matcher(line);
-      if (matcher.find()) pid = matcher.group(1);
-    }
   }
 
   protected void deleteDatabaseFiles() {
