@@ -9,6 +9,7 @@ import java.nio.file.Path;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 
 /**
  * Extension of Jackson ObjectMapper with methods that catch IOException and
@@ -83,5 +84,10 @@ public class UncheckedObjectMapper extends ObjectMapper {
     } catch (JsonProcessingException jpe) {
       throw new UncheckedIOException(jpe);
     }
+  }
+
+  @Override
+  public UncheckedObjectMapper disable(SerializationFeature f) {
+    return (UncheckedObjectMapper) super.disable(f);
   }
 }

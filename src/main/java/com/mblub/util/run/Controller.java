@@ -13,7 +13,6 @@ public interface Controller extends Runnable {
     return "command must include at least " + getMinimumArgCount() + " argument(s)";
   }
 
-  @SuppressWarnings("unused")
   public default Controller initialize(Supplier<PrintStream> outStreamSupplier, String[] args) {
     return this;
   }
