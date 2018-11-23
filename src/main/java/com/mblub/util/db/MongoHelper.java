@@ -13,6 +13,7 @@ import fr.javatic.mongo.jacksonCodec.ObjectMapperFactory;
 public class MongoHelper {
   protected MongoClientOptions clientOptions;
   protected ServerAddress serverAddress;
+  protected String serverHost;
   protected Integer serverPort;
 
   public Integer getServerPort() {
@@ -29,6 +30,19 @@ public class MongoHelper {
     return this;
   }
 
+  public String getServerHost() {
+    return serverHost;
+  }
+
+  public void setServerHost(String serverHost) {
+    this.serverHost = serverHost;
+  }
+
+  public MongoHelper withServerHost(String serverHost) {
+    setServerHost(serverHost);
+    return this;
+  }
+
   protected MongoClientOptions getClientOptions() {
     if (clientOptions == null) {
       CodecRegistry codecRegistry = CodecRegistries.fromRegistries(MongoClient.getDefaultCodecRegistry(),
@@ -42,11 +56,8 @@ public class MongoHelper {
   // TODO: do not assume localhost
   protected ServerAddress getServerAddress() {
     if (serverAddress == null) {
-      if (serverPort == null) {
-        serverAddress = new ServerAddress();
-      } else {
-        serverAddress = new ServerAddress(ServerAddress.defaultHost(), serverPort);
-      }
+      serverAddress = new ServerAddress(serverHost == null ? ServerAddress.defaultHost() : serverHost,
+              serverPort == null ? ServerAddress.defaultPort() : serverPort);
     }
     return serverAddress;
   }
