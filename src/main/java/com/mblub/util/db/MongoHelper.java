@@ -1,20 +1,27 @@
 package com.mblub.util.db;
 
+import static java.util.Arrays.asList;
+
+import java.util.function.Function;
+
 import org.bson.codecs.configuration.CodecRegistries;
 import org.bson.codecs.configuration.CodecRegistry;
 
-import com.mongodb.MongoClient;
-import com.mongodb.MongoClientOptions;
+import com.mongodb.MongoClientSettings;
 import com.mongodb.ServerAddress;
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoClients;
 
 import fr.javatic.mongo.jacksonCodec.JacksonCodecProvider;
 import fr.javatic.mongo.jacksonCodec.ObjectMapperFactory;
 
 public class MongoHelper {
-  protected MongoClientOptions clientOptions;
+  protected MongoClientSettings clientSettings;
   protected ServerAddress serverAddress;
   protected String serverHost;
   protected Integer serverPort;
+
+  protected Function<MongoClientSettings, MongoClient> clientSettingsToClient = MongoClients::create;
 
   public Integer getServerPort() {
     return serverPort;
@@ -43,17 +50,17 @@ public class MongoHelper {
     return this;
   }
 
-  protected MongoClientOptions getClientOptions() {
-    if (clientOptions == null) {
-      CodecRegistry codecRegistry = CodecRegistries.fromRegistries(MongoClient.getDefaultCodecRegistry(),
+  protected MongoClientSettings getClientSettings() {
+    if (clientSettings == null) {
+      CodecRegistry codecRegistry = CodecRegistries.fromRegistries(MongoClientSettings.getDefaultCodecRegistry(),
               CodecRegistries.fromProviders(new JacksonCodecProvider(ObjectMapperFactory.createObjectMapper())));
 
-      clientOptions = MongoClientOptions.builder().codecRegistry(codecRegistry).build();
+      clientSettings = MongoClientSettings.builder().codecRegistry(codecRegistry)
+              .applyToClusterSettings(b -> b.hosts(asList(getServerAddress()))).build();
     }
-    return clientOptions;
+    return clientSettings;
   }
 
-  // TODO: do not assume localhost
   protected ServerAddress getServerAddress() {
     if (serverAddress == null) {
       serverAddress = new ServerAddress(serverHost == null ? ServerAddress.defaultHost() : serverHost,
@@ -63,6 +70,6 @@ public class MongoHelper {
   }
 
   public MongoClient getClient() {
-    return new MongoClient(getServerAddress(), getClientOptions());
+    return clientSettingsToClient.apply(getClientSettings());
   }
 }
