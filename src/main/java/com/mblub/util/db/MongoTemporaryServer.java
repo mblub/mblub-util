@@ -16,7 +16,7 @@ public class MongoTemporaryServer {
 
   // TODO: create an integration test and remove this
   public static void main(String[] args) throws IOException, InterruptedException {
-    new MongoTemporaryServer().withMongoHome(Paths.get("/Applications/mongodb/mongodb-osx-x86_64-3.4.7"))
+    new MongoTemporaryServer().withMongoHome(Paths.get("/Applications/mongodb/mongodb-osx-x86_64-4.0.4"))
             .withDatabasePort(27018).run();
   }
 
