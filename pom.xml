@@ -1,9 +1,8 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.mblub.util</groupId>
   <artifactId>mblub-util</artifactId>
-  <version>1.0.0-SNAPSHOT</version>
+  <version>1.0.0</version>
   <name>Common Utilities</name>
   <properties>
     <jdk.version>1.8</jdk.version>
@@ -126,6 +125,6 @@
     <connection>${scm.connection.prefix}/mblub-util.git</connection>
     <developerConnection>${scm.connection.prefix}/mblub-util.git</developerConnection>
     <url>${scm.url.prefix}/mblub-util</url>
-    <tag>HEAD</tag>
+    <tag>mblub-util-1.0.0</tag>
   </scm>
 </project>
