@@ -18,6 +18,12 @@ cache:
 build:
   stage: build
   script:
+    - printenv
+    - echo mvn $MAVEN_CLI_OPTS clean test
+    - cat $CI_PROJECT_DIR/.m2/settings.xml
+    - mvn $MAVEN_CLI_OPTS help:effective-pom
+    - mvn $MAVEN_CLI_OPTS dependency:list-repositories
+    - mvn $MAVEN_CLI_OPTS dependency:tree
     - mvn $MAVEN_CLI_OPTS clean test
   except:
      variables:
