@@ -18,6 +18,10 @@ cache:
 build:
   stage: build
   script:
+    - echo mvn $MAVEN_CLI_OPTS clean test
+    - mvn $MAVEN_CLI_OPTS help:effective-pom
+    - mvn $MAVEN_CLI_OPTS dependency:tree
+    - mvn $MAVEN_CLI_OPTS dependency:list-repositories
     - mvn $MAVEN_CLI_OPTS clean test
   except:
      variables:
