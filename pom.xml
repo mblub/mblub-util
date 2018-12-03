@@ -56,7 +56,7 @@
     <dependency>
       <groupId>com.mblub.util</groupId>
       <artifactId>mblub-test-util</artifactId>
-      <version>1.0.10</version>
+      <version>1.0.11</version>
     </dependency>
     <dependency>
       <groupId>junit</groupId>
@@ -123,9 +123,9 @@
     </repository>
   </distributionManagement>
   <scm>
-    <connection>${scm.connection}/mblub-util.git</connection>
-    <developerConnection>${scm.connection}/mblub-util.git</developerConnection>
-    <url>${scm.url}/mblub-util</url>
+    <connection>${scm.connection.prefix}/mblub-util.git</connection>
+    <developerConnection>${scm.connection.prefix}/mblub-util.git</developerConnection>
+    <url>${scm.url.prefix}/mblub-util</url>
     <tag>HEAD</tag>
   </scm>
 </project>
