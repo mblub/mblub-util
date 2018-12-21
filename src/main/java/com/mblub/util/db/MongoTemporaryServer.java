@@ -11,7 +11,11 @@ import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.regex.Pattern;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 public class MongoTemporaryServer {
+  private static final Logger LOG = LogManager.getLogger(MongoTemporaryServer.class);
   protected static final Pattern PID_LOG_PATTERN = Pattern.compile("MongoDB starting : pid=([0-9]*) ");
 
   // TODO: create an integration test and remove this
@@ -31,6 +35,7 @@ public class MongoTemporaryServer {
   protected Integer databasePort;
   protected String pid;
   protected Path databasePath;
+  protected Path logRootPath;
   protected Process mongoProcess;
   protected Path mongoDaemon;
 
@@ -69,6 +74,19 @@ public class MongoTemporaryServer {
     return databasePath;
   }
 
+  public Path getLogRootPath() {
+    return logRootPath;
+  }
+
+  public void setLogRootPath(Path logRootPath) {
+    this.logRootPath = logRootPath;
+  }
+
+  public MongoTemporaryServer withLogRootPath(Path logPath) {
+    setLogRootPath(logPath);
+    return this;
+  }
+
   public Process getMongoProcess() {
     return mongoProcess;
   }
@@ -81,36 +99,41 @@ public class MongoTemporaryServer {
   }
 
   public void startServer() throws IOException {
-    System.out.println("in startServer");
+    LOG.debug("Creating temporary directory for mongo database");
     databasePath = Files.createTempDirectory("mongoTempDb");
-    System.out.println("temp dbPath: " + databasePath);
+    LOG.debug("Created temporary directory: " + databasePath);
     ProcessBuilder pb = new ProcessBuilder();
-    pb.command(getMongoDaemon().toString(), "--port", databasePort.toString(), "--dbpath", databasePath.toString());
-    pb.redirectOutput(Redirect.INHERIT);
+    Path logPath = logRootPath.resolve("mongodb-" + databasePort + ".log");
+    Path sysoutPath = logRootPath.resolve("mongodb-sysout.log");
+    pb.command(getMongoDaemon().toString(), "--port", databasePort.toString(), "--dbpath", databasePath.toString(),
+            "--logpath", logPath.toString());
+    pb.redirectOutput(sysoutPath.toFile());
+    pb.redirectError(sysoutPath.toFile());
     mongoProcess = pb.start();
-    System.out.println("started process " + mongoProcess);
+    LOG.debug("OS process for running temporary mongo database " + mongoProcess);
     if (mongoProcess.getClass().getName().equals("java.lang.UNIXProcess")) {
       /* get the PID on unix/linux systems */
       try {
         Field f = mongoProcess.getClass().getDeclaredField("pid");
         f.setAccessible(true);
         pid = Integer.toString(f.getInt(mongoProcess));
+        LOG.debug("pid of temporary mongo: " + pid);
       } catch (Throwable e) {
       }
     }
   }
 
   public void stopServer() throws IOException, InterruptedException {
-    System.out.println("killing " + pid + "...");
+    LOG.debug("Killing mongo temporary database at pid " + pid + "...");
     ProcessBuilder pb = new ProcessBuilder("kill", pid);
     Process killProcess = pb.start();
     pb.redirectOutput(Redirect.INHERIT);
     killProcess.waitFor();
-    System.out.println("after kill");
+    LOG.debug("Kill signal delivered");
     mongoProcess.waitFor();
-    System.out.println("after mongoProcess waitFor");
+    LOG.debug("Finished waiting for mongoProcess (it has been killed)");
     deleteDatabaseFiles();
-    System.out.println("after deleting database files");
+    LOG.debug("Deleted temporary database files");
   }
 
   protected void deleteDatabaseFiles() {

@@ -55,7 +55,7 @@
     <dependency>
       <groupId>com.mblub.util</groupId>
       <artifactId>mblub-test-util</artifactId>
-      <version>1.0.11</version>
+      <version>1.0.14</version>
     </dependency>
     <dependency>
       <groupId>junit</groupId>
@@ -107,6 +107,11 @@
       <groupId>fr.javatic.mongo</groupId>
       <artifactId>mongo-jackson-codec</artifactId>
       <version>3.2.2__0.5</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-api</artifactId>
+      <version>2.11.1</version>
     </dependency>
   </dependencies>
   <distributionManagement>

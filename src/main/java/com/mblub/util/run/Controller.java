@@ -1,7 +1,6 @@
 package com.mblub.util.run;
 
-import java.io.PrintStream;
-import java.util.function.Supplier;
+import java.nio.file.Path;
 
 public interface Controller extends Runnable {
 
@@ -13,7 +12,7 @@ public interface Controller extends Runnable {
     return "command must include at least " + getMinimumArgCount() + " argument(s)";
   }
 
-  public default Controller initialize(Supplier<PrintStream> outStreamSupplier, String[] args) {
+  public default Controller initialize(Path outputRootPath, String[] args) {
     return this;
   }
 }
