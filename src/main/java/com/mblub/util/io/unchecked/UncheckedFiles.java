@@ -35,10 +35,18 @@ public class UncheckedFiles {
       throw new UncheckedIOException(ioe);
     }
   }
-  
-  public static Path move(Path source, Path target, CopyOption...options) {
+
+  public static Path move(Path source, Path target, CopyOption... options) {
     try {
       return Files.move(source, target, options);
+    } catch (IOException ioe) {
+      throw new UncheckedIOException(ioe);
+    }
+  }
+
+  public static Path write(Path path, Iterable<? extends CharSequence> lines, OpenOption... options) {
+    try {
+      return Files.write(path, lines, options);
     } catch (IOException ioe) {
       throw new UncheckedIOException(ioe);
     }
