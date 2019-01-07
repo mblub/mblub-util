@@ -3,6 +3,8 @@ package com.mblub.util.db;
 import static java.util.Arrays.asList;
 
 import java.util.function.Function;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 import org.bson.codecs.configuration.CodecRegistries;
 import org.bson.codecs.configuration.CodecRegistry;
@@ -11,6 +13,7 @@ import com.mongodb.MongoClientSettings;
 import com.mongodb.ServerAddress;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
+import com.mongodb.client.MongoIterable;
 
 import fr.javatic.mongo.jacksonCodec.JacksonCodecProvider;
 import fr.javatic.mongo.jacksonCodec.ObjectMapperFactory;
@@ -71,5 +74,17 @@ public class MongoHelper {
 
   public MongoClient getClient() {
     return clientSettingsToClient.apply(getClientSettings());
+  }
+
+  public <TResult> Stream<TResult> sequentialStream(MongoIterable<TResult> findResult) {
+    return stream(findResult, false);
+  }
+
+  public <TResult> Stream<TResult> parallelStream(MongoIterable<TResult> findResult) {
+    return stream(findResult, false);
+  }
+
+  public <TResult> Stream<TResult> stream(MongoIterable<TResult> findResult, boolean isParallel) {
+    return StreamSupport.stream(findResult.spliterator(), isParallel);
   }
 }
