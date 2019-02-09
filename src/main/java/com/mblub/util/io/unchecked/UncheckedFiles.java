@@ -11,6 +11,7 @@ import java.nio.file.CopyOption;
 import java.nio.file.Files;
 import java.nio.file.OpenOption;
 import java.nio.file.Path;
+import java.nio.file.attribute.FileAttribute;
 import java.util.stream.Stream;
 
 /**
@@ -65,6 +66,14 @@ public class UncheckedFiles {
   public static Stream<Path> list(Path path) {
     try {
       return Files.list(path);
+    } catch (IOException ioe) {
+      throw new UncheckedIOException(ioe);
+    }
+  }
+
+  public static Path createDirectories(Path dir, FileAttribute<?>... attrs) {
+    try {
+      return Files.createDirectories(dir, attrs);
     } catch (IOException ioe) {
       throw new UncheckedIOException(ioe);
     }
