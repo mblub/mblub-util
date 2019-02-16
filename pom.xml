@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.mblub.util</groupId>
   <artifactId>mblub-util</artifactId>
-  <version>1.0.4</version>
+  <version>1.0.5-SNAPSHOT</version>
   <name>Common Utilities</name>
   <properties>
     <jdk.version>1.8</jdk.version>
@@ -140,6 +140,6 @@
     <connection>${scm.connection.prefix}/mblub-util.git</connection>
     <developerConnection>${scm.connection.prefix}/mblub-util.git</developerConnection>
     <url>${scm.url.prefix}/mblub-util</url>
-    <tag>mblub-util-1.0.4</tag>
+    <tag>HEAD</tag>
   </scm>
 </project>
