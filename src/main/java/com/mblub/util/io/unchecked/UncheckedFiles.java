@@ -8,10 +8,14 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.file.CopyOption;
+import java.nio.file.FileVisitOption;
 import java.nio.file.Files;
+import java.nio.file.LinkOption;
 import java.nio.file.OpenOption;
 import java.nio.file.Path;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.attribute.FileAttribute;
+import java.nio.file.attribute.FileTime;
 import java.util.stream.Stream;
 
 /**
@@ -74,6 +78,38 @@ public class UncheckedFiles {
   public static Path createDirectories(Path dir, FileAttribute<?>... attrs) {
     try {
       return Files.createDirectories(dir, attrs);
+    } catch (IOException ioe) {
+      throw new UncheckedIOException(ioe);
+    }
+  }
+
+  public static FileTime getLastModifiedTime(Path path, LinkOption... options) {
+    try {
+      return Files.getLastModifiedTime(path, options);
+    } catch (IOException ioe) {
+      throw new UncheckedIOException(ioe);
+    }
+  }
+
+  public static BasicFileAttributes readAttributes(Path path) {
+    try {
+      return Files.readAttributes(path, BasicFileAttributes.class);
+    } catch (IOException ioe) {
+      throw new UncheckedIOException(ioe);
+    }
+  }
+
+  public static long size(Path path) {
+    try {
+      return Files.size(path);
+    } catch (IOException ioe) {
+      throw new UncheckedIOException(ioe);
+    }
+  }
+
+  public static Stream<Path> walk(Path start, FileVisitOption... options) {
+    try {
+      return Files.walk(start, options);
     } catch (IOException ioe) {
       throw new UncheckedIOException(ioe);
     }

@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UncheckedIOException;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
@@ -75,6 +76,6 @@ public class WebPageReader {
       throw new UncheckedIOException(new IOException(errorMessage, e));
     }
 
-    return new BufferedReader(new InputStreamReader(contentStream)).lines();
+    return new BufferedReader(new InputStreamReader(contentStream, Charset.forName("UTF-8"))).lines();
   }
 }

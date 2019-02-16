@@ -8,6 +8,7 @@ import java.io.Writer;
 import java.nio.file.Path;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
@@ -27,6 +28,15 @@ public class UncheckedObjectMapper extends ObjectMapper {
 
   @Override
   public <T> T readValue(String src, Class<T> valueType) {
+    try {
+      return super.readValue(src, valueType);
+    } catch (IOException ioe) {
+      throw new UncheckedIOException(ioe);
+    }
+  }
+
+  @Override
+  public <T> T readValue(String src, @SuppressWarnings("rawtypes") TypeReference valueType) {
     try {
       return super.readValue(src, valueType);
     } catch (IOException ioe) {
