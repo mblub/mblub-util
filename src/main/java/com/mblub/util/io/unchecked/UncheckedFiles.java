@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.UncheckedIOException;
 import java.nio.file.CopyOption;
 import java.nio.file.FileVisitOption;
@@ -120,6 +121,14 @@ public class UncheckedFiles {
           FileVisitOption... options) {
     try {
       return Files.find(start, maxDepth, matcher, options);
+    } catch (IOException ioe) {
+      throw new UncheckedIOException(ioe);
+    }
+  }
+
+  public static OutputStream newOutputStream(Path path, OpenOption... options) {
+    try {
+      return Files.newOutputStream(path, options);
     } catch (IOException ioe) {
       throw new UncheckedIOException(ioe);
     }
