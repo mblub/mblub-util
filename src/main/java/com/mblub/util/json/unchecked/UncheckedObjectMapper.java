@@ -10,6 +10,7 @@ import java.nio.file.Path;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
 /**
@@ -24,6 +25,16 @@ public class UncheckedObjectMapper extends ObjectMapper {
 
   public UncheckedObjectMapper() {
     super();
+  }
+
+  @Override
+  public UncheckedObjectMapper setPropertyNamingStrategy(PropertyNamingStrategy s) {
+    return (UncheckedObjectMapper) super.setPropertyNamingStrategy(s);
+  }
+
+  @Override
+  public UncheckedObjectMapper enable(SerializationFeature f) {
+    return (UncheckedObjectMapper) super.enable(f);
   }
 
   @Override
