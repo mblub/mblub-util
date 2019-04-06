@@ -25,8 +25,7 @@ public class Mp4Processor implements Serializable {
   /**
    * Get some fields of the first track whose width and height are non-zero.
    *
-   * @return
-   * @throws IOException
+   * @return video info
    */
   public VideoInfo getVideoInfo() {
     VideoInfo info = new VideoInfo();
