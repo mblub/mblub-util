@@ -3,12 +3,14 @@ package com.mblub.util.db;
 import static java.util.Arrays.asList;
 
 import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import org.bson.codecs.configuration.CodecRegistries;
 import org.bson.codecs.configuration.CodecRegistry;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mongodb.MongoClientSettings;
 import com.mongodb.ServerAddress;
 import com.mongodb.client.MongoClient;
@@ -24,6 +26,7 @@ public class MongoHelper {
   protected String serverHost;
   protected Integer serverPort;
 
+  protected Supplier<ObjectMapper> objectMapperSupplier = ObjectMapperFactory::createObjectMapper;
   protected Function<MongoClientSettings, MongoClient> clientSettingsToClient = MongoClients::create;
 
   public Integer getServerPort() {
@@ -53,10 +56,23 @@ public class MongoHelper {
     return this;
   }
 
+  public Supplier<ObjectMapper> getObjectMapperSupplier() {
+    return objectMapperSupplier;
+  }
+
+  public void setObjectMapperSupplier(Supplier<ObjectMapper> objectMapperSupplier) {
+    this.objectMapperSupplier = objectMapperSupplier;
+  }
+
+  public MongoHelper withObjectMapperSupplier(Supplier<ObjectMapper> objectMapperSupplier) {
+    setObjectMapperSupplier(objectMapperSupplier);
+    return this;
+  }
+
   protected MongoClientSettings getClientSettings() {
     if (clientSettings == null) {
       CodecRegistry codecRegistry = CodecRegistries.fromRegistries(MongoClientSettings.getDefaultCodecRegistry(),
-              CodecRegistries.fromProviders(new JacksonCodecProvider(ObjectMapperFactory.createObjectMapper())));
+              CodecRegistries.fromProviders(new JacksonCodecProvider(objectMapperSupplier.get())));
 
       clientSettings = MongoClientSettings.builder().codecRegistry(codecRegistry)
               .applyToClusterSettings(b -> b.hosts(asList(getServerAddress()))).build();
