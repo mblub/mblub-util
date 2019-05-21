@@ -7,11 +7,14 @@ import java.util.function.Supplier;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
+import org.apache.commons.lang3.StringUtils;
 import org.bson.codecs.configuration.CodecRegistries;
 import org.bson.codecs.configuration.CodecRegistry;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
+import com.mongodb.MongoClientSettings.Builder;
 import com.mongodb.ServerAddress;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
@@ -25,34 +28,72 @@ public class MongoHelper {
   protected ServerAddress serverAddress;
   protected String serverHost;
   protected Integer serverPort;
+  protected String connectionString;
 
   protected Supplier<ObjectMapper> objectMapperSupplier = ObjectMapperFactory::createObjectMapper;
   protected Function<MongoClientSettings, MongoClient> clientSettingsToClient = MongoClients::create;
 
+  /**
+   * @deprecated use {@link #getConnectionString()} instead
+   */
+  @Deprecated
   public Integer getServerPort() {
     return serverPort;
   }
 
+  /**
+   * @deprecated use {@link #setConnectionString(String)} instead
+   */
+  @Deprecated
   public void setServerPort(Integer serverPort) {
     this.serverPort = serverPort;
     serverAddress = null;
   }
 
+  /**
+   * @deprecated use {@link #withConnectionString(String)} instead
+   */
+  @Deprecated
   public MongoHelper withServerPort(Integer serverPort) {
     setServerPort(serverPort);
     return this;
   }
 
+  /**
+   * @deprecated use {@link #getConnectionString()} instead
+   */
+  @Deprecated
   public String getServerHost() {
     return serverHost;
   }
 
+  /**
+   * @deprecated use {@link #setConnectionString(String)} instead
+   */
+  @Deprecated
   public void setServerHost(String serverHost) {
     this.serverHost = serverHost;
   }
 
+  /**
+   * @deprecated use {@link #withConnectionString(String)} instead
+   */
+  @Deprecated
   public MongoHelper withServerHost(String serverHost) {
     setServerHost(serverHost);
+    return this;
+  }
+
+  public String getConnectionString() {
+    return connectionString;
+  }
+
+  public void setConnectionString(String connectionString) {
+    this.connectionString = connectionString;
+  }
+
+  public MongoHelper withConnectionString(String connectionString) {
+    setConnectionString(connectionString);
     return this;
   }
 
@@ -74,8 +115,13 @@ public class MongoHelper {
       CodecRegistry codecRegistry = CodecRegistries.fromRegistries(MongoClientSettings.getDefaultCodecRegistry(),
               CodecRegistries.fromProviders(new JacksonCodecProvider(objectMapperSupplier.get())));
 
-      clientSettings = MongoClientSettings.builder().codecRegistry(codecRegistry)
-              .applyToClusterSettings(b -> b.hosts(asList(getServerAddress()))).build();
+      Builder builder = MongoClientSettings.builder().codecRegistry(codecRegistry);
+      if (StringUtils.isEmpty(connectionString)) {
+        builder = builder.applyToClusterSettings(b -> b.hosts(asList(getServerAddress())));
+      } else {
+        builder = builder.applyConnectionString(new ConnectionString(connectionString));
+      }
+      clientSettings = builder.build();
     }
     return clientSettings;
   }
