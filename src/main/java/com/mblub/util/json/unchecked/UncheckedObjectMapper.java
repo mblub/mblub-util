@@ -108,6 +108,15 @@ public class UncheckedObjectMapper extends ObjectMapper {
   }
 
   @Override
+  public byte[] writeValueAsBytes(Object value) {
+    try {
+      return super.writeValueAsBytes(value);
+    } catch (JsonProcessingException jpe) {
+      throw new UncheckedIOException(jpe);
+    }
+  }
+
+  @Override
   public UncheckedObjectMapper disable(SerializationFeature f) {
     return (UncheckedObjectMapper) super.disable(f);
   }
